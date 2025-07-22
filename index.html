@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet.photon.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.photon.js"></script>
+        <script src="data/JABODETABEKPUNJUR_0.js"></script>
+        <script src="data/KABUPATENBOGOR_1.js"></script>
+        <script src="data/JAKARTA_2.js"></script>
+        <script src="data/UsiaPerumahanTerencana_3.js"></script>
+        <script src="data/ArahanKepadatanPerumahanTerencana_4.js"></script>
+        <script src="data/PermeabilitasPerumahanTerencana_5.js"></script>
+        <script src="data/ArketipePerumahanTerencana_6.js"></script>
+        <script src="data/PengembanganPerumahanTerencana_7.js"></script>
+        <script src="data/KotaBaru_8.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[-6.626355451617902,106.79161972764557],[-6.540177286119635,106.90855121984627]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop_JABODETABEKPUNJUR_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KAB_KOTA'] !== null ? autolinker.link(String(feature.properties['KAB_KOTA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_JABODETABEKPUNJUR_0_0() {
+            return {
+                pane: 'pane_JABODETABEKPUNJUR_0',
+                opacity: 1,
+                color: 'rgba(166,206,227,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.4)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_JABODETABEKPUNJUR_0');
+        map.getPane('pane_JABODETABEKPUNJUR_0').style.zIndex = 400;
+        map.getPane('pane_JABODETABEKPUNJUR_0').style['mix-blend-mode'] = 'normal';
+        var layer_JABODETABEKPUNJUR_0 = new L.geoJson(json_JABODETABEKPUNJUR_0, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_JABODETABEKPUNJUR_0',
+            layerName: 'layer_JABODETABEKPUNJUR_0',
+            pane: 'pane_JABODETABEKPUNJUR_0',
+            onEachFeature: pop_JABODETABEKPUNJUR_0,
+            style: style_JABODETABEKPUNJUR_0_0,
+        });
+        bounds_group.addLayer(layer_JABODETABEKPUNJUR_0);
+        map.addLayer(layer_JABODETABEKPUNJUR_0);
+        function pop_KABUPATENBOGOR_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(String(feature.properties['SRS_ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDBBPS'] !== null ? autolinker.link(String(feature.properties['KDBBPS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCBPS'] !== null ? autolinker.link(String(feature.properties['KDCBPS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCPUM'] !== null ? autolinker.link(String(feature.properties['KDCPUM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEBPS'] !== null ? autolinker.link(String(feature.properties['KDEBPS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEPUM'] !== null ? autolinker.link(String(feature.properties['KDEPUM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPBPS'] !== null ? autolinker.link(String(feature.properties['KDPBPS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPKAB'] !== null ? autolinker.link(String(feature.properties['KDPKAB']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPPUM'] !== null ? autolinker.link(String(feature.properties['KDPPUM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUASWH'] !== null ? autolinker.link(String(feature.properties['LUASWH']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(String(feature.properties['TIPADM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(String(feature.properties['WADMKD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(String(feature.properties['WADMKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(String(feature.properties['WADMPR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKC'] !== null ? autolinker.link(String(feature.properties['WIADKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKK'] !== null ? autolinker.link(String(feature.properties['WIADKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADPR'] !== null ? autolinker.link(String(feature.properties['WIADPR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKD'] !== null ? autolinker.link(String(feature.properties['WIADKD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(String(feature.properties['SHAPE_Leng']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(String(feature.properties['SHAPE_Area']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KABUPATENBOGOR_1_0() {
+            return {
+                pane: 'pane_KABUPATENBOGOR_1',
+                opacity: 1,
+                color: 'rgba(166,206,227,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,234,234,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_KABUPATENBOGOR_1');
+        map.getPane('pane_KABUPATENBOGOR_1').style.zIndex = 401;
+        map.getPane('pane_KABUPATENBOGOR_1').style['mix-blend-mode'] = 'normal';
+        var layer_KABUPATENBOGOR_1 = new L.geoJson(json_KABUPATENBOGOR_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_KABUPATENBOGOR_1',
+            layerName: 'layer_KABUPATENBOGOR_1',
+            pane: 'pane_KABUPATENBOGOR_1',
+            onEachFeature: pop_KABUPATENBOGOR_1,
+            style: style_KABUPATENBOGOR_1_0,
+        });
+        bounds_group.addLayer(layer_KABUPATENBOGOR_1);
+        map.addLayer(layer_KABUPATENBOGOR_1);
+        function pop_JAKARTA_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PROVINSI'] !== null ? autolinker.link(String(feature.properties['PROVINSI']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Leng'] !== null ? autolinker.link(String(feature.properties['Shape_Leng']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Area'] !== null ? autolinker.link(String(feature.properties['Shape_Area']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_JAKARTA_2_0() {
+            return {
+                pane: 'pane_JAKARTA_2',
+                opacity: 1,
+                color: 'rgba(232,232,232,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(238,210,210,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_JAKARTA_2');
+        map.getPane('pane_JAKARTA_2').style.zIndex = 402;
+        map.getPane('pane_JAKARTA_2').style['mix-blend-mode'] = 'normal';
+        var layer_JAKARTA_2 = new L.geoJson(json_JAKARTA_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_JAKARTA_2',
+            layerName: 'layer_JAKARTA_2',
+            pane: 'pane_JAKARTA_2',
+            onEachFeature: pop_JAKARTA_2,
+            style: style_JAKARTA_2_0,
+        });
+        bounds_group.addLayer(layer_JAKARTA_2);
+        map.addLayer(layer_JAKARTA_2);
+        function pop_UsiaPerumahanTerencana_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kota_Baru" colspan="2"><strong>Kota_Baru</strong><br />' + (feature.properties['Kota_Baru'] !== null ? autolinker.link(String(feature.properties['Kota_Baru']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Perumahan" colspan="2"><strong>Perumahan</strong><br />' + (feature.properties['Perumahan'] !== null ? autolinker.link(String(feature.properties['Perumahan']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Integrasi" colspan="2"><strong>Integrasi</strong><br />' + (feature.properties['Integrasi'] !== null ? autolinker.link(String(feature.properties['Integrasi']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kepadatan" colspan="2"><strong>Kepadatan</strong><br />' + (feature.properties['Kepadatan'] !== null ? autolinker.link(String(feature.properties['Kepadatan']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Usia" colspan="2"><strong>Usia</strong><br />' + (feature.properties['Usia'] !== null ? autolinker.link(String(feature.properties['Usia']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_UsiaPerumahanTerencana_3_0(feature) {
+            if (feature.properties['Usia'] >= 2.000000 && feature.properties['Usia'] <= 6.000000 ) {
+                return {
+                pane: 'pane_UsiaPerumahanTerencana_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,133,113,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Usia'] >= 6.000000 && feature.properties['Usia'] <= 10.000000 ) {
+                return {
+                pane: 'pane_UsiaPerumahanTerencana_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(103,191,177,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Usia'] >= 10.000000 && feature.properties['Usia'] <= 14.000000 ) {
+                return {
+                pane: 'pane_UsiaPerumahanTerencana_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(198,229,224,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Usia'] >= 14.000000 && feature.properties['Usia'] <= 18.000000 ) {
+                return {
+                pane: 'pane_UsiaPerumahanTerencana_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,225,197,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Usia'] >= 18.000000 && feature.properties['Usia'] <= 22.000000 ) {
+                return {
+                pane: 'pane_UsiaPerumahanTerencana_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,175,105,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Usia'] >= 22.000000 && feature.properties['Usia'] <= 26.000000 ) {
+                return {
+                pane: 'pane_UsiaPerumahanTerencana_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(166,97,26,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_UsiaPerumahanTerencana_3');
+        map.getPane('pane_UsiaPerumahanTerencana_3').style.zIndex = 403;
+        map.getPane('pane_UsiaPerumahanTerencana_3').style['mix-blend-mode'] = 'normal';
+        var layer_UsiaPerumahanTerencana_3 = new L.geoJson(json_UsiaPerumahanTerencana_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_UsiaPerumahanTerencana_3',
+            layerName: 'layer_UsiaPerumahanTerencana_3',
+            pane: 'pane_UsiaPerumahanTerencana_3',
+            onEachFeature: pop_UsiaPerumahanTerencana_3,
+            style: style_UsiaPerumahanTerencana_3_0,
+        });
+        bounds_group.addLayer(layer_UsiaPerumahanTerencana_3);
+        map.addLayer(layer_UsiaPerumahanTerencana_3);
+        function pop_ArahanKepadatanPerumahanTerencana_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kota_Baru" colspan="2"><strong>Kota_Baru</strong><br />' + (feature.properties['Kota_Baru'] !== null ? autolinker.link(String(feature.properties['Kota_Baru']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Perumahan" colspan="2"><strong>Perumahan</strong><br />' + (feature.properties['Perumahan'] !== null ? autolinker.link(String(feature.properties['Perumahan']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kepadatan" colspan="2"><strong>Kepadatan</strong><br />' + (feature.properties['Kepadatan'] !== null ? autolinker.link(String(feature.properties['Kepadatan']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Arketipe" colspan="2"><strong>Arketipe</strong><br />' + (feature.properties['Arketipe'] !== null ? autolinker.link(String(feature.properties['Arketipe']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ArahanKepadatanPerumahanTerencana_4_0(feature) {
+            switch(String(feature.properties['Name'])) {
+                case 'Pp1':
+                    return {
+                pane: 'pane_ArahanKepadatanPerumahanTerencana_4',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(97,31,83,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pp2':
+                    return {
+                pane: 'pane_ArahanKepadatanPerumahanTerencana_4',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,27,79,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pp3':
+                    return {
+                pane: 'pane_ArahanKepadatanPerumahanTerencana_4',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,136,96,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kawasan Sempadan Sungai':
+                    return {
+                pane: 'pane_ArahanKepadatanPerumahanTerencana_4',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,235,221,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_ArahanKepadatanPerumahanTerencana_4');
+        map.getPane('pane_ArahanKepadatanPerumahanTerencana_4').style.zIndex = 404;
+        map.getPane('pane_ArahanKepadatanPerumahanTerencana_4').style['mix-blend-mode'] = 'normal';
+        var layer_ArahanKepadatanPerumahanTerencana_4 = new L.geoJson(json_ArahanKepadatanPerumahanTerencana_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ArahanKepadatanPerumahanTerencana_4',
+            layerName: 'layer_ArahanKepadatanPerumahanTerencana_4',
+            pane: 'pane_ArahanKepadatanPerumahanTerencana_4',
+            onEachFeature: pop_ArahanKepadatanPerumahanTerencana_4,
+            style: style_ArahanKepadatanPerumahanTerencana_4_0,
+        });
+        bounds_group.addLayer(layer_ArahanKepadatanPerumahanTerencana_4);
+        map.addLayer(layer_ArahanKepadatanPerumahanTerencana_4);
+        function pop_PermeabilitasPerumahanTerencana_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Perumahan " colspan="2"><strong>Perumahan </strong><br />' + (feature.properties['Perumahan '] !== null ? autolinker.link(String(feature.properties['Perumahan ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Nilai AwaP" colspan="2"><strong>Nilai AwaP</strong><br />' + (feature.properties['Nilai AwaP'] !== null ? autolinker.link(String(feature.properties['Nilai AwaP']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kategori" colspan="2"><strong>Kategori</strong><br />' + (feature.properties['Kategori'] !== null ? autolinker.link(String(feature.properties['Kategori']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_PermeabilitasPerumahanTerencana_5_0(feature) {
+            switch(String(feature.properties['Kategori'])) {
+                case 'Sangat Baik':
+                    return {
+                pane: 'pane_PermeabilitasPerumahanTerencana_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(5,113,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Baik':
+                    return {
+                pane: 'pane_PermeabilitasPerumahanTerencana_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(146,197,222,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sedang':
+                    return {
+                pane: 'pane_PermeabilitasPerumahanTerencana_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(169,169,169,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Buruk':
+                    return {
+                pane: 'pane_PermeabilitasPerumahanTerencana_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(244,165,130,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sangat Buruk':
+                    return {
+                pane: 'pane_PermeabilitasPerumahanTerencana_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,0,32,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_PermeabilitasPerumahanTerencana_5');
+        map.getPane('pane_PermeabilitasPerumahanTerencana_5').style.zIndex = 405;
+        map.getPane('pane_PermeabilitasPerumahanTerencana_5').style['mix-blend-mode'] = 'normal';
+        var layer_PermeabilitasPerumahanTerencana_5 = new L.geoJson(json_PermeabilitasPerumahanTerencana_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PermeabilitasPerumahanTerencana_5',
+            layerName: 'layer_PermeabilitasPerumahanTerencana_5',
+            pane: 'pane_PermeabilitasPerumahanTerencana_5',
+            onEachFeature: pop_PermeabilitasPerumahanTerencana_5,
+            style: style_PermeabilitasPerumahanTerencana_5_0,
+        });
+        bounds_group.addLayer(layer_PermeabilitasPerumahanTerencana_5);
+        map.addLayer(layer_PermeabilitasPerumahanTerencana_5);
+        function pop_ArketipePerumahanTerencana_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Klaster" colspan="2"><strong>Klaster</strong><br />' + (feature.properties['Klaster'] !== null ? autolinker.link(String(feature.properties['Klaster']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Arketipe" colspan="2"><strong>Arketipe</strong><br />' + (feature.properties['Arketipe'] !== null ? autolinker.link(String(feature.properties['Arketipe']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ArketipePerumahanTerencana_6_0(feature) {
+            switch(String(feature.properties['Arketipe'])) {
+                case '1':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,245,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(163,224,186,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(85,202,173,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,171,172,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,139,166,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '6':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(54,107,159,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '7':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,73,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '8':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,47,95,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '9':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(40,25,47,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '10':
+                    return {
+                pane: 'pane_ArketipePerumahanTerencana_6',
+                opacity: 1,
+                color: 'rgba(255,127,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(11,4,5,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_ArketipePerumahanTerencana_6');
+        map.getPane('pane_ArketipePerumahanTerencana_6').style.zIndex = 406;
+        map.getPane('pane_ArketipePerumahanTerencana_6').style['mix-blend-mode'] = 'normal';
+        var layer_ArketipePerumahanTerencana_6 = new L.geoJson(json_ArketipePerumahanTerencana_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ArketipePerumahanTerencana_6',
+            layerName: 'layer_ArketipePerumahanTerencana_6',
+            pane: 'pane_ArketipePerumahanTerencana_6',
+            onEachFeature: pop_ArketipePerumahanTerencana_6,
+            style: style_ArketipePerumahanTerencana_6_0,
+        });
+        bounds_group.addLayer(layer_ArketipePerumahanTerencana_6);
+        map.addLayer(layer_ArketipePerumahanTerencana_6);
+        function pop_PengembanganPerumahanTerencana_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Name" colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kota_Baru" colspan="2"><strong>Kota_Baru</strong><br />' + (feature.properties['Kota_Baru'] !== null ? autolinker.link(String(feature.properties['Kota_Baru']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Perumahan" colspan="2"><strong>Perumahan</strong><br />' + (feature.properties['Perumahan'] !== null ? autolinker.link(String(feature.properties['Perumahan']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Kepadatan" colspan="2"><strong>Kepadatan</strong><br />' + (feature.properties['Kepadatan'] !== null ? autolinker.link(String(feature.properties['Kepadatan']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="AwaP" colspan="2"><strong>AwaP</strong><br />' + (feature.properties['AwaP'] !== null ? autolinker.link(String(feature.properties['AwaP']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Usia" colspan="2"><strong>Usia</strong><br />' + (feature.properties['Usia'] !== null ? autolinker.link(String(feature.properties['Usia']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Arketipe" colspan="2"><strong>Arketipe</strong><br />' + (feature.properties['Arketipe'] !== null ? autolinker.link(String(feature.properties['Arketipe']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_PengembanganPerumahanTerencana_7_0() {
+            return {
+                pane: 'pane_PengembanganPerumahanTerencana_7',
+                radius: 0.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,251,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_PengembanganPerumahanTerencana_7');
+        map.getPane('pane_PengembanganPerumahanTerencana_7').style.zIndex = 407;
+        map.getPane('pane_PengembanganPerumahanTerencana_7').style['mix-blend-mode'] = 'normal';
+        var layer_PengembanganPerumahanTerencana_7 = new L.geoJson(json_PengembanganPerumahanTerencana_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PengembanganPerumahanTerencana_7',
+            layerName: 'layer_PengembanganPerumahanTerencana_7',
+            pane: 'pane_PengembanganPerumahanTerencana_7',
+            onEachFeature: pop_PengembanganPerumahanTerencana_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PengembanganPerumahanTerencana_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PengembanganPerumahanTerencana_7);
+        map.addLayer(layer_PengembanganPerumahanTerencana_7);
+        function pop_KotaBaru_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ref'] !== null ? autolinker.link(String(feature.properties['ref']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['x1'] !== null ? autolinker.link(String(feature.properties['x1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['y1'] !== null ? autolinker.link(String(feature.properties['y1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['x2'] !== null ? autolinker.link(String(feature.properties['x2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['y2'] !== null ? autolinker.link(String(feature.properties['y2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['angCONN'] !== null ? autolinker.link(String(feature.properties['angCONN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CONN'] !== null ? autolinker.link(String(feature.properties['CONN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['segid'] !== null ? autolinker.link(String(feature.properties['segid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['segLEN'] !== null ? autolinker.link(String(feature.properties['segLEN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CH'] !== null ? autolinker.link(String(feature.properties['CH']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CHr100.00m'] !== null ? autolinker.link(String(feature.properties['CHr100.00m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CHr200m'] !== null ? autolinker.link(String(feature.properties['CHr200m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CHr500m'] !== null ? autolinker.link(String(feature.properties['CHr500m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['INT'] !== null ? autolinker.link(String(feature.properties['INT']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['INTr100.00'] !== null ? autolinker.link(String(feature.properties['INTr100.00']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['INTr200m'] !== null ? autolinker.link(String(feature.properties['INTr200m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['INTr500m'] !== null ? autolinker.link(String(feature.properties['INTr500m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NC'] !== null ? autolinker.link(String(feature.properties['NC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NCr100.00m'] !== null ? autolinker.link(String(feature.properties['NCr100.00m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NCr200m'] !== null ? autolinker.link(String(feature.properties['NCr200m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NCr500m'] !== null ? autolinker.link(String(feature.properties['NCr500m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TD'] !== null ? autolinker.link(String(feature.properties['TD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TDr100.00m'] !== null ? autolinker.link(String(feature.properties['TDr100.00m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TDr200m'] !== null ? autolinker.link(String(feature.properties['TDr200m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TDr500m'] !== null ? autolinker.link(String(feature.properties['TDr500m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NACH'] !== null ? autolinker.link(String(feature.properties['NACH']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NACHr100.0'] !== null ? autolinker.link(String(feature.properties['NACHr100.0']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NACHr200m'] !== null ? autolinker.link(String(feature.properties['NACHr200m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NACHr500m'] !== null ? autolinker.link(String(feature.properties['NACHr500m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAIN'] !== null ? autolinker.link(String(feature.properties['NAIN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAINr100.0'] !== null ? autolinker.link(String(feature.properties['NAINr100.0']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAINr200m'] !== null ? autolinker.link(String(feature.properties['NAINr200m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAINr500m'] !== null ? autolinker.link(String(feature.properties['NAINr500m']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(String(feature.properties['layer']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(String(feature.properties['path']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Kota Baru'] !== null ? autolinker.link(String(feature.properties['Kota Baru']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KotaBaru_8_0() {
+            return {
+                pane: 'pane_KotaBaru_8',
+                shape: 'diamond',
+                radius: 0.0,
+                opacity: 1,
+                color: 'rgba(166,206,227,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,239,161,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_KotaBaru_8');
+        map.getPane('pane_KotaBaru_8').style.zIndex = 408;
+        map.getPane('pane_KotaBaru_8').style['mix-blend-mode'] = 'normal';
+        var layer_KotaBaru_8 = new L.geoJson(json_KotaBaru_8, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_KotaBaru_8',
+            layerName: 'layer_KotaBaru_8',
+            pane: 'pane_KotaBaru_8',
+            onEachFeature: pop_KotaBaru_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_KotaBaru_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_KotaBaru_8);
+        map.addLayer(layer_KotaBaru_8);
+        map.on("zoomend", function(e) {
+            if (map.getZoom() <= 19 && map.getZoom() >= 8) {
+                map.addLayer(layer_JABODETABEKPUNJUR_0);
+            } else if (map.getZoom() > 19 || map.getZoom() < 8) {
+                map.removeLayer(layer_JABODETABEKPUNJUR_0);
+            }
+        });
+            if (map.getZoom() <= 19 && map.getZoom() >= 8) {
+                map.addLayer(layer_JABODETABEKPUNJUR_0);
+            } else if (map.getZoom() > 19 || map.getZoom() < 8) {
+                map.removeLayer(layer_JABODETABEKPUNJUR_0);
+            }
+        var overlaysTree = [
+        {label: '<b>Kawasan Pengembangan</b>', collapsed: true, selectAllCheckbox: true, children: [
+            {label: '<img src="legend/KotaBaru_8.png" /> Kota Baru', layer: layer_KotaBaru_8},
+            {label: '<img src="legend/PengembanganPerumahanTerencana_7.png" /> Pengembangan Perumahan Terencana', layer: layer_PengembanganPerumahanTerencana_7},]},
+            {label: 'Arketipe Perumahan Terencana<br /><table><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_OldCompactLoop0.png" /></td><td>Old Compact Loop</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_EarlySemiCompactLoop1.png" /></td><td>Early Semi-Compact Loop</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_ModernSemiCompactPermeableGrid2.png" /></td><td>Modern Semi-Compact Permeable Grid</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_OldSemiCompactGrid3.png" /></td><td>Old Semi-Compact Grid</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_OldRiverside4.png" /></td><td>Old Riverside</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_ModernSparseCuldesac5.png" /></td><td>Modern Sparse Cul-de-sac</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_OldCompactElongatedLoop6.png" /></td><td>Old Compact Elongated-Loop</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_OldCompactPermeableGrid7.png" /></td><td>Old Compact Permeable Grid</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_MatureSemiCompactCuldesac8.png" /></td><td>Mature Semi-Compact Cul-de-sac</td></tr><tr><td style="text-align: center;"><img src="legend/ArketipePerumahanTerencana_6_ModernCompactElongatedGrid9.png" /></td><td>Modern Compact Elongated Grid</td></tr></table>', layer: layer_ArketipePerumahanTerencana_6},
+            {label: 'Permeabilitas Perumahan Terencana<br /><table><tr><td style="text-align: center;"><img src="legend/PermeabilitasPerumahanTerencana_5_SangatBaik0.png" /></td><td>Sangat Baik</td></tr><tr><td style="text-align: center;"><img src="legend/PermeabilitasPerumahanTerencana_5_Baik1.png" /></td><td>Baik</td></tr><tr><td style="text-align: center;"><img src="legend/PermeabilitasPerumahanTerencana_5_Sedang2.png" /></td><td>Sedang</td></tr><tr><td style="text-align: center;"><img src="legend/PermeabilitasPerumahanTerencana_5_Buruk3.png" /></td><td>Buruk</td></tr><tr><td style="text-align: center;"><img src="legend/PermeabilitasPerumahanTerencana_5_SangatBuruk4.png" /></td><td>Sangat Buruk</td></tr></table>', layer: layer_PermeabilitasPerumahanTerencana_5},
+            {label: 'Arahan Kepadatan Perumahan Terencana<br /><table><tr><td style="text-align: center;"><img src="legend/ArahanKepadatanPerumahanTerencana_4_Pp1PerumahanKepadatanTinggi0.png" /></td><td>Pp1 - Perumahan Kepadatan Tinggi</td></tr><tr><td style="text-align: center;"><img src="legend/ArahanKepadatanPerumahanTerencana_4_Pp2PerumahanKepadatanSedang1.png" /></td><td>Pp2 - Perumahan Kepadatan Sedang</td></tr><tr><td style="text-align: center;"><img src="legend/ArahanKepadatanPerumahanTerencana_4_Pp3PerumahanKepadatanRendah2.png" /></td><td>Pp3 - Perumahan Kepadatan Rendah</td></tr><tr><td style="text-align: center;"><img src="legend/ArahanKepadatanPerumahanTerencana_4_KawasanSempadanSungai3.png" /></td><td>Kawasan Sempadan Sungai</td></tr></table>', layer: layer_ArahanKepadatanPerumahanTerencana_4},
+            {label: 'Usia Perumahan Terencana<br /><table><tr><td style="text-align: center;"><img src="legend/UsiaPerumahanTerencana_3_260.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UsiaPerumahanTerencana_3_6101.png" /></td><td>6 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/UsiaPerumahanTerencana_3_10142.png" /></td><td>10 - 14</td></tr><tr><td style="text-align: center;"><img src="legend/UsiaPerumahanTerencana_3_14183.png" /></td><td>14 - 18</td></tr><tr><td style="text-align: center;"><img src="legend/UsiaPerumahanTerencana_3_18224.png" /></td><td>18 - 22</td></tr><tr><td style="text-align: center;"><img src="legend/UsiaPerumahanTerencana_3_22265.png" /></td><td>22 - 26</td></tr></table>', layer: layer_UsiaPerumahanTerencana_3},
+        {label: '<b>Wilayah dan Batas Perkotaan</b>',  selectAllCheckbox: true, children: [
+            {label: '<img src="legend/JAKARTA_2.png" /> JAKARTA', layer: layer_JAKARTA_2},
+            {label: '<img src="legend/KABUPATENBOGOR_1.png" /> KABUPATEN BOGOR', layer: layer_KABUPATENBOGOR_1},
+            {label: '<img src="legend/JABODETABEKPUNJUR_0.png" /> JABODETABEKPUNJUR', layer: layer_JABODETABEKPUNJUR_0},]},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: false, 
+        });
+        lay.addTo(map);
+		document.addEventListener("DOMContentLoaded", function() {
+            // set new Layers List height which considers toggle icon
+            function newLayersListHeight() {
+                var layerScrollbarElement = document.querySelector('.leaflet-control-layers-scrollbar');
+                if (layerScrollbarElement) {
+                    var layersListElement = document.querySelector('.leaflet-control-layers-list');
+                    var originalHeight = layersListElement.style.height 
+                        || window.getComputedStyle(layersListElement).height;
+                    var newHeight = parseFloat(originalHeight) - 50;
+                    layersListElement.style.height = newHeight + 'px';
+                }
+            }
+            var isLayersListExpanded = true;
+            var controlLayersElement = document.querySelector('.leaflet-control-layers');
+            var toggleLayerControl = document.querySelector('.leaflet-control-layers-toggle');
+            // toggle Collapsed/Expanded and apply new Layers List height
+            toggleLayerControl.addEventListener('click', function() {
+                if (isLayersListExpanded) {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                } else {
+                    controlLayersElement.classList.add('leaflet-control-layers-expanded');
+                }
+                isLayersListExpanded = !isLayersListExpanded;
+                newLayersListHeight()
+            });	
+			// apply new Layers List height if toggle layerstree
+			if (controlLayersElement) {
+				controlLayersElement.addEventListener('click', function(event) {
+					var toggleLayerHeaderPointer = event.target.closest('.leaflet-layerstree-header-pointer span');
+					if (toggleLayerHeaderPointer) {
+						newLayersListHeight();
+					}
+				});
+			}
+            // Collapsed/Expanded at Start to apply new height
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            // Collapsed touch/small screen
+            var isSmallScreen = window.innerWidth < 650;
+            if (isSmallScreen) {
+                setTimeout(function() {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                    isLayersListExpanded = !isLayersListExpanded;
+                }, 500);
+            }  
+        });       
+        setBounds();
+        var i = 0;
+        layer_JABODETABEKPUNJUR_0.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['KAB_KOTA'] !== null?String('<div style="color: #a9a9a9; font-size: 6pt; font-weight: bold; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['KAB_KOTA']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_JABODETABEKPUNJUR_0'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_PengembanganPerumahanTerencana_7.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((exp_label_PengembanganPerumahanTerencana_7_eval_expression(context) !== null?String('<div style="color: #323232; font-size: 8pt; font-style: italic; font-family: \'Arial\', sans-serif;">' + exp_label_PengembanganPerumahanTerencana_7_eval_expression(context)) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_PengembanganPerumahanTerencana_7'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_KotaBaru_8.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Kota Baru'] !== null?String('<div style="color: #1f78b4; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Kota Baru']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_KotaBaru_8'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_JABODETABEKPUNJUR_0,layer_KABUPATENBOGOR_1,layer_JAKARTA_2,layer_UsiaPerumahanTerencana_3,layer_ArahanKepadatanPerumahanTerencana_4,layer_PermeabilitasPerumahanTerencana_5,layer_ArketipePerumahanTerencana_6,layer_PengembanganPerumahanTerencana_7,layer_KotaBaru_8]);
+        map.on("zoomend", function(){
+            resetLabels([layer_JABODETABEKPUNJUR_0,layer_KABUPATENBOGOR_1,layer_JAKARTA_2,layer_UsiaPerumahanTerencana_3,layer_ArahanKepadatanPerumahanTerencana_4,layer_PermeabilitasPerumahanTerencana_5,layer_ArketipePerumahanTerencana_6,layer_PengembanganPerumahanTerencana_7,layer_KotaBaru_8]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_JABODETABEKPUNJUR_0,layer_KABUPATENBOGOR_1,layer_JAKARTA_2,layer_UsiaPerumahanTerencana_3,layer_ArahanKepadatanPerumahanTerencana_4,layer_PermeabilitasPerumahanTerencana_5,layer_ArketipePerumahanTerencana_6,layer_PengembanganPerumahanTerencana_7,layer_KotaBaru_8]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_JABODETABEKPUNJUR_0,layer_KABUPATENBOGOR_1,layer_JAKARTA_2,layer_UsiaPerumahanTerencana_3,layer_ArahanKepadatanPerumahanTerencana_4,layer_PermeabilitasPerumahanTerencana_5,layer_ArketipePerumahanTerencana_6,layer_PengembanganPerumahanTerencana_7,layer_KotaBaru_8]);
+        });
+        </script>
+    </body>
+</html>
